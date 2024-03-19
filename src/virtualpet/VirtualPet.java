@@ -4,17 +4,30 @@
  */
 package virtualpet;
 import java.util.*;
-/**
- *
- * @author michael.roy-diclemen
- */
-public class VirtualPet {
+import java.util.Scanner;
 
-    /**
-     * @param args the command line arguments
-     */
+public class VirtualPet {
     public static void main(String[] args) {
-        // TODO code application logic here
+        Scanner input = new Scanner(System.in);
+        System.out.println("    _____        ^----^ \n / /^ . ^\\ \\    |^ Y ^| \n  / (_U_) \\    //      \\\\  \n /	   \\   (,,) (,,)");
+        System.out.print("       Pet Adventures! \n1.Start   2.Instructions   3.Exit \nWhere do you want to go? Enter number: ");
+        int menuOption = input.nextInt();
+        switch(menuOption){
+            case 1: 
+                System.out.print("Option 1: Dog   Option 2: Cat \nChoose a pet: ");
+                int petChoice = input.nextInt();
+                if(petChoice == 1){
+                    System.out.println("You have chosen the Dog!");
+                }
+                else if(petChoice == 2){
+                    System.out.println("You have chosen the Cat!");
+                }
+                else{
+                    System.out.println("Invalid input");
+                }
+            case 2: System.out.println("Instructions"); break;
+            case 3: System.exit(0); break;
+            default: System.out.println("Invalid input");
+        }
     }
-    
 }
