@@ -86,6 +86,7 @@ public class VirtualPet {
                 String consonants = "bcdfghjklmnpqrstvwxyz";
                 String cConsonants = "BCDFGHJKLMNPQRSTVWXYZ";
                 String vowels = "aeiou";
+                
                 //Used to alternate between consonants and vowels
                 for(int i = 0; i < nameLength; i++){
                     if (i%2 == 0){
@@ -106,6 +107,7 @@ public class VirtualPet {
                         int doubleLetter = rand.nextInt(4);
                         if(doubleLetter == 0){
                             petName += tempVowel;
+                            i++;
                         }
                     }
                 }
@@ -113,16 +115,21 @@ public class VirtualPet {
                 System.out.println("Invalid input");
                 System.exit(0);
             }
-            System.out.println("Your pet, named " + petName + ", has been born!");
+            System.out.println("Your pet, named " + petName + ", has been born!\n");
             nameChosen = true;
         }
         
+        //After a name is chosen, assign stat points to the pet
         if(nameChosen == true){
+            //Randomly choose stat points and then assign the remainders
             maxHealth = rand.nextInt(10)+1;
             totalStatPoints -= maxHealth;
             maxFood = rand.nextInt(10)+1;
             totalStatPoints -= maxFood;
             maxEnergy = totalStatPoints;
+            
+            //Output the stats for the pet
+            System.out.println(petName + " Stats:");
             System.out.println("Health: " + maxHealth + "\nFood: " + maxFood + "\nEnergy: " + maxEnergy);
         }
     }
