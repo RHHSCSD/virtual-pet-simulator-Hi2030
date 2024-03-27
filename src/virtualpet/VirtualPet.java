@@ -14,7 +14,13 @@ public class VirtualPet {
         Random rand = new Random();
         String userPet = "";
         boolean petChosen = false;
+        boolean nameChosen = false;
         String petName = "";
+        
+        int maxHealth = 0;
+        int maxFood = 0;
+        int maxEnergy = 0;
+        int totalStatPoints = 20;
         
         //Menu Screen
             System.out.println("    _____        ^----^ \n / /^ . ^\\ \\    |^ Y ^| \n  / (_U_) \\    //      \\\\  \n /	   \\   (,,) (,,)");
@@ -108,6 +114,16 @@ public class VirtualPet {
                 System.exit(0);
             }
             System.out.println("Your pet, named " + petName + ", has been born!");
+            nameChosen = true;
+        }
+        
+        if(nameChosen == true){
+            maxHealth = rand.nextInt(10)+1;
+            totalStatPoints -= maxHealth;
+            maxFood = rand.nextInt(10)+1;
+            totalStatPoints -= maxFood;
+            maxEnergy = totalStatPoints;
+            System.out.println("Health: " + maxHealth + "\nFood: " + maxFood + "\nEnergy: " + maxEnergy);
         }
     }
 }
