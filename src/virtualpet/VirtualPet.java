@@ -13,8 +13,11 @@ public class VirtualPet {
         Scanner input = new Scanner(System.in);
         Random rand = new Random();
         String userPet = "";
+        boolean firstLogin = false;
+        int menuOption = 0;
         boolean petChosen = false;
         boolean nameChosen = false;
+        boolean startGame = false;
         String petName = "";
         
         int maxHealth = 0;
@@ -27,17 +30,31 @@ public class VirtualPet {
             System.out.print("      Pet Adventures!");
         
         //Login system
-        System.out.print("\nEnter username: ");
-        String username = input.nextLine();
-        System.out.print("Enter password: ");
-        String password = input.nextLine();
+        for (int i = 0; i < 3; i++){
+            System.out.print("\nEnter username: ");
+            String username = input.nextLine();
+            System.out.print("Enter password: ");
+            String password = input.nextLine();
+            if ((username.equals("snoopy")) && (password.equals("toto"))){
+                firstLogin = true;   
+                break;
+            }
+            else if(i == 2){
+                System.out.println("You have guessed too many times.");
+                System.exit(0);
+            }
+            else{
+                System.out.println("Incorrect username or password. Try again.");
+                continue;
+            }
+        }
         
         //If username and password is correct, go to menu
-        if ((username.equals("snoopy")) && (password.equals("toto"))){
-            System.out.print("\nWelcome, Player!\n1.Start   2.Instructions   3.Exit \nWhere do you want to go? Enter number: ");
+        if (firstLogin == true){
+            System.out.print("\nWelcome, Player!\n1.Start Game   2.Instructions   3.Exit \nWhere do you want to go? Enter number: ");
+            menuOption = input.nextInt();
 
             //Determine where the user wants to go
-            int menuOption = input.nextInt();
             switch(menuOption){
                 //If user chooses to start the game, they are given choices of their starting pet
                 case 1: 
@@ -64,12 +81,7 @@ public class VirtualPet {
                 default: System.out.println("Invalid input");
             }
         }
-        //If password or username is incorrect, exit the program
-        else{
-            System.out.println("Incorrect username or password");
-            System.exit(0);
-        }
-        
+
         //Once pet has been chosen, start name selection
         if(petChosen == true){
             System.out.print("\nChoose a name for your pet! Would you like to...\n1.Type in a name\n2.Randomly generate a name\nChoose: ");
@@ -113,15 +125,10 @@ public class VirtualPet {
                 }
             } else{
                 System.out.println("Invalid input");
-                System.exit(0);
             }
             System.out.println("Your pet, named " + petName + ", has been born!\n");
-            nameChosen = true;
-        }
-        
-        //After a name is chosen, assign stat points to the pet
-        if(nameChosen == true){
-            //Randomly choose stat points and then assign the remainders
+            
+            //Randomly assign stat points to the pet after a name is chosen
             maxHealth = rand.nextInt(10)+1;
             totalStatPoints -= maxHealth;
             maxFood = rand.nextInt(10)+1;
@@ -131,6 +138,25 @@ public class VirtualPet {
             //Output the stats for the pet
             System.out.println(petName + " Stats:");
             System.out.println("Health: " + maxHealth + "\nFood: " + maxFood + "\nEnergy: " + maxEnergy);
+            firstLogin = false;
         }
+        
+        //Looping the main menu after a user has chosen their pet while they have not chosen to exit the program
+        do{
+            //Ask user for input
+            System.out.print("\nWelcome, Player!\n1.Play/Interact   2.Instructions   3.Exit \nWhere do you want to go? Enter number: ");
+            menuOption = input.nextInt();
+
+            //Determine what to do depending on user input
+            switch(menuOption){
+                case 1: 
+                    startGame = true;
+                 break;
+                case 2: System.out.println("Here are the instructions!"); break;
+                case 3: System.out.println("Exiting..."); break;
+                default: System.out.println("Invalid input");
+            }
+        } while (menuOption != 3);
+        System.exit(0);
     }
 }
