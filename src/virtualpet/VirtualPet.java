@@ -17,13 +17,15 @@ public class VirtualPet {
         int menuOption = 0;
         boolean petChosen = false;
         boolean nameChosen = false;
-        boolean startGame = false;
+        boolean goToMenu = false;
         String petName = "";
         
         int maxHealth = 0;
         int maxFood = 0;
         int maxEnergy = 0;
         int totalStatPoints = 20;
+        
+        int coins = 0;
         
         //Menu Screen
             System.out.println("    _____        ^----^ \n / /^ . ^\\ \\    |^ Y ^| \n  / (_U_) \\    //      \\\\  \n /	   \\   (,,) (,,)");
@@ -51,35 +53,39 @@ public class VirtualPet {
         
         //If username and password is correct, go to menu
         if (firstLogin == true){
-            System.out.print("\nWelcome, Player!\n1.Start Game   2.Instructions   3.Exit \nWhere do you want to go? Enter number: ");
-            menuOption = input.nextInt();
+            do{
+                System.out.print("\nWelcome, Player!\n1.Start Game   2.Instructions   3.Exit \nWhere do you want to go? Enter number: ");
+                menuOption = input.nextInt();
 
-            //Determine where the user wants to go
-            switch(menuOption){
-                //If user chooses to start the game, they are given choices of their starting pet
-                case 1: 
-                    System.out.print("\nOption 1: Dog   Option 2: Cat \nChoose a pet: ");
-                    int petChoice = input.nextInt();
-                    if(petChoice == 1){
-                        System.out.println("You have chosen the Dog!");
-                        userPet = "dog";
-                        petChosen = true;
-                    }
-                    else if(petChoice == 2){
-                        System.out.println("You have chosen the Cat!");
-                        userPet = "cat";
-                        petChosen = true;
-                    }
-                    else{
-                        System.out.println("Invalid input");
-                    }
-                 break;
-                //If user chooses to read instructions, they will be brought to the instructions
-                case 2: System.out.println("Here are the instructions!"); break;
-                //If user chooses to leave the game, the program will stop
-                case 3: System.out.println("Exiting..."); System.exit(0); break;
-                default: System.out.println("Invalid input");
-            }
+                //Determine where the user wants to go
+                switch(menuOption){
+                    //If user chooses to start the game, they are given choices of their starting pet
+                    case 1: 
+                        System.out.print("\nOption 1: Dog   Option 2: Cat \nChoose a pet: ");
+                        int petChoice = input.nextInt();
+                        if(petChoice == 1){
+                            System.out.println("You have chosen the Dog!");
+                            userPet = "dog";
+                            petChosen = true;
+                        }
+                        else if(petChoice == 2){
+                            System.out.println("You have chosen the Cat!");
+                            userPet = "cat";
+                            petChosen = true;
+                        }
+                        else{
+                            System.out.println("Invalid input");
+                        }
+                     break;
+                    //If user chooses to read instructions, they will be brought to the instructions
+                    case 2: 
+                        System.out.println("Here are the instructions!"); 
+                        break;
+                    //If user chooses to leave the game, the program will stop
+                    case 3: System.out.println("Exiting..."); System.exit(0); break;
+                    default: System.out.println("Invalid input");
+                }
+            } while(petChosen != true);
         }
 
         //Once pet has been chosen, start name selection
@@ -139,6 +145,7 @@ public class VirtualPet {
             System.out.println(petName + " Stats:");
             System.out.println("Health: " + maxHealth + "\nFood: " + maxFood + "\nEnergy: " + maxEnergy);
             firstLogin = false;
+            goToMenu = true;
         }
         
         //Looping the main menu after a user has chosen their pet while they have not chosen to exit the program
@@ -150,13 +157,48 @@ public class VirtualPet {
             //Determine what to do depending on user input
             switch(menuOption){
                 case 1: 
-                    startGame = true;
-                 break;
-                case 2: System.out.println("Here are the instructions!"); break;
+                    goToMenu = false;
+                    System.out.print("1.Number Guessing Game\n2.Matching Game\nSelect a minigame: ");
+                    int gameChoice = input.nextInt();
+                    switch(gameChoice){
+                        case 1:
+                            int randNum = rand.nextInt(98) + 2;
+                            System.out.println("Guess a number between 1-100: ");
+                            int guess = input.nextInt();
+                            for (int i = 0; i < 4; i++){
+                                if (guess > randNum){
+                                    System.out.println("Too high! Try again!");
+                                }
+                                else if (guess < randNum){
+                                    System.out.println("Too low! Try again!");
+                                }
+                                else if (guess == randNum){
+                                    System.out.print("You got it correct! You earned 100 coins!");
+                                    coins += 100;
+                                    goToMenu = true;
+                                    break;
+                                }
+                                System.out.print("Guess a number between 1-100: ");
+                                guess = input.nextInt();
+                                if(guess != randNum && i == 3){
+                                    System.out.println("You ran out of guesses. Better luck next time!");
+                                    goToMenu = true;
+                                }
+                            }
+                            break;
+                        case 2: System.out.println("Matching Game"); break;
+                        default: System.out.println("Invalid input");
+                    }
+                break;
+                case 2: 
+                    goToMenu = false;
+                    System.out.println("Here are the instructions!"); 
+                    goToMenu = true;
+                    break;
                 case 3: System.out.println("Exiting..."); break;
                 default: System.out.println("Invalid input");
             }
-        } while (menuOption != 3);
+        } while (menuOption != 3 && goToMenu == true);
         System.exit(0);
     }
 }
