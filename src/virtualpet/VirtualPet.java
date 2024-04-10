@@ -162,10 +162,13 @@ public class VirtualPet {
                     int gameChoice = input.nextInt();
                     switch(gameChoice){
                         case 1:
+                            System.out.println("\nNumber Guessing Game...");
                             int randNum = rand.nextInt(98) + 2;
-                            System.out.println("Guess a number between 1-100: ");
+                            int tempCoins = 0;
+                            
+                            System.out.print("Guess a number between 1-100: ");
                             int guess = input.nextInt();
-                            for (int i = 0; i < 4; i++){
+                            for (int i = 0; i < 9; i++){
                                 if (guess > randNum){
                                     System.out.println("Too high! Try again!");
                                 }
@@ -173,20 +176,34 @@ public class VirtualPet {
                                     System.out.println("Too low! Try again!");
                                 }
                                 else if (guess == randNum){
-                                    System.out.print("You got it correct! You earned 100 coins!");
-                                    coins += 100;
+                                    tempCoins += 100 * (9 - i);
+                                    coins += tempCoins;
+                                    System.out.println("You got it correct! You guessed " + (i + 1) + " times. You earned " + tempCoins + " coins!");
+                                    tempCoins = 0;
+                                    System.out.println("You have " + coins + " coins!");
                                     goToMenu = true;
                                     break;
                                 }
                                 System.out.print("Guess a number between 1-100: ");
                                 guess = input.nextInt();
-                                if(guess != randNum && i == 3){
-                                    System.out.println("You ran out of guesses. Better luck next time!");
+                                if(guess != randNum && i == 9){
+                                    System.out.println("You ran out of guesses. The number was " + randNum + ". Better luck next time!");
+                                    tempCoins = 0;
                                     goToMenu = true;
                                 }
                             }
                             break;
-                        case 2: System.out.println("Matching Game"); break;
+                        case 2:
+                            System.out.println("\nMatching Game...");
+                            String startingCards = "aabbccddeeff";
+                            String shuffle = "";
+                            for (int i = 0; i < startingCards.length(); i++){
+                                //shuffle += startingCards.charAt(startingCards.length()-1);
+                                //System.out.println(shuffle);
+                                //startingCards = startingCards.substring(0,startingCards.length()-1);
+                                //startingCards = startingCards.substring(1,startingCards.length());
+                            }
+                            break;
                         default: System.out.println("Invalid input");
                     }
                 break;
