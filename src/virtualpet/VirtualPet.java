@@ -3,14 +3,21 @@ import java.util.Scanner;
 import java.util.Random;
 
 public class VirtualPet {
+        //Declare global variables for pet stats
+        static int maxHealth = 0;
+        static int currentHealth = 0;
+        static int maxFood = 0;
+        static int currentFood = 0;
+        static int maxEnergy = 0;
+        static int currentEnergy = 0;
+        static int coins = 0;
+        
     public static void main(String[] args) {
         //Declare variables
         Scanner keyboard = new Scanner(System.in);
         Random rand = new Random();
         boolean mainMenu = false;
         int menuOption = 0;
-        
-        int coins = 0;
         int tempCoins = 0;
         
         //Menu Screen
@@ -56,19 +63,35 @@ public class VirtualPet {
                 //If user chooses to start playing
                 case 1: 
                     mainMenu = false;
-                    System.out.print("1.Number Guessing Game\n2.Matching Game\nSelect a minigame: ");
+                    System.out.println("\nMinigames:\n1.Number Guessing Game\n2.Matching Game\nInteraction:\n3.Play with your pet\n4.Feed your pet\n5.Groom your pet");
+                    System.out.print("Where would you like to go: ");
                     int gameChoice = keyboard.nextInt();
                     switch(gameChoice){
                         //User chooses to play number guessing minigame
                         case 1:
                             coins += numberGuessingGame();
+                            mainMenu = true;
                             break;
                         //User chooses to play matching minigame
                         case 2:
                             coins += matchingGame();
+                            mainMenu = true;
+                            break;
+                        case 3:
+                            playPet();
+                            mainMenu = true;
+                            break;
+                        case 4:
+                            feedPet();
+                            mainMenu = true;
+                            break;
+                        case 5:
+                            groomPet();
+                            mainMenu = true;
                             break;
                         default: System.out.print("Invalid Input");
                     }
+                    break;
                 //If user wants to see the instructions
                 case 2: 
                     mainMenu = false;
@@ -202,26 +225,25 @@ public class VirtualPet {
     }
 
     //Pet Stat Points
-    public static boolean statPointsAssign(String petName){
+    public static void statPointsAssign(String petName){
         //State variables
         Random rand = new Random();
         Scanner keyboard = new Scanner(System.in);
-        int maxHealth = 0;
-        int maxFood = 0;
-        int maxEnergy = 0;
-        int totalStatPoints = 20;
+        int totalStatPoints = 50;
         
         //Randomly assign stat points to the pet after a name is chosen
-        maxHealth = rand.nextInt(10)+1;
+        maxHealth = rand.nextInt(20)+1;
+        currentHealth = maxHealth;
         totalStatPoints -= maxHealth;
-        maxFood = rand.nextInt(10)+1;
+        maxFood = rand.nextInt(20)+1;
+        currentFood = maxFood;
         totalStatPoints -= maxFood;
         maxEnergy = totalStatPoints;
+        currentEnergy = maxEnergy;
 
         //Output the stats for the pet
         System.out.println(petName + " Stats:");
         System.out.println("Health: " + maxHealth + "\nFood: " + maxFood + "\nEnergy: " + maxEnergy);
-        return true;
     }
     
     //Number Guessing Minigame
@@ -323,11 +345,128 @@ public class VirtualPet {
             //Otherwise if user doesn't get all pairs within the limited number of tries, they get coins based on number of found pairs
             else if((correctPairs != (shuffleLength/2)) && (i == 19)){
                 tempCoins += 25 * correctPairs;
-                System.out.println("\nYou didn't final all pairs. Try again next time! You earned " + tempCoins + " coins!");
+                System.out.println("\nYou only found " + correctPairs + " pairs. Try again next time! You earned " + tempCoins + " coins!");
                 break;
             }
         }
         //Return the coins earned in this minigame to the main method to store a total number of coins
         return tempCoins;
+    }
+    
+    //Playing with your pet
+    public static void playPet(){
+        Scanner keyboard = new Scanner(System.in);
+        //Keep asking the question until user responds
+        for(int i = 1; i > 0; i++){
+            System.out.print("Would you like to give your pet a toy?(Y/N) ");
+            String giveToy = (keyboard.nextLine()).toLowerCase();
+            int toyPrice = 45;
+            
+            //Ensures that user has enough amount of coins to pay for a toy
+            if(coins >= toyPrice){
+                //If user chooses to give pet a toy
+                if(giveToy.equals("y")){
+                    System.out.println("You gave your pet a toy!");
+                    coins -= toyPrice;
+                    currentEnergy += 5;
+                    //Ensures that current energy doesn't exceed the limit
+                    if(currentEnergy > maxEnergy){
+                        currentEnergy = maxEnergy;
+                    }
+                    System.out.println("Your pet is feeling more energetic! Your pet has " + currentEnergy + "/" + maxEnergy + " energy!\nCoins -" + toyPrice);
+                    break;
+                }
+                //If user doesn't choose to give their pet a toy
+                else if(giveToy.equals("n")){
+                    System.out.println("You didn't give your pet a toy...");
+                    break;
+                } else {
+                    System.out.println("Invalid input");
+                } 
+            }
+            //If user doesn't have enough coins
+            else {
+                System.out.println("You don't have enough coins! Play a minigame to earn some!");
+                break;
+            }
+        }
+    }
+    
+    //Feeding your pet
+    public static void feedPet(){
+        Scanner keyboard = new Scanner(System.in);
+        //Keep asking the question until user responds
+        for(int i = 1; i > 0; i++){
+            System.out.print("Would you like to feed your pet?(Y/N) ");
+            String giveFood = (keyboard.nextLine()).toLowerCase();
+            int foodPrice = 35;
+            
+            //Ensures that user has enough amount of coins to pay for food
+            if(coins >= foodPrice){
+                //If user chooses to feed pet
+                if(giveFood.equals("y")){
+                    System.out.println("You fed your pet!");
+                    coins -= foodPrice;
+                    currentFood += 5;
+                    //Ensures that current food doesn't exceed the limit
+                    if(currentFood > maxFood){
+                        currentFood = maxFood;
+                    }
+                    System.out.println("You pet is less hungry! Your pet has " + currentFood + "/" + maxFood + " food!\nCoins -" + foodPrice);
+                    break;
+                }
+                //If user doesn't choose to feed pet
+                else if(giveFood.equals("n")){
+                    System.out.println("You didn't feed your pet...");
+                    break;
+                } else {
+                    System.out.println("Invalid input");
+                } 
+            }
+            //If user doesn't have enough coins
+            else {
+                System.out.println("You don't have enough coins! Play a minigame to earn some!");
+                break;
+            }
+        }
+    }
+    
+    //Grooming your pet
+    public static void groomPet(){
+        Scanner keyboard = new Scanner(System.in);
+        //Keep asking the question until user responds
+        for(int i = 1; i > 0; i++){
+            System.out.print("Would you like to groom your pet?(Y/N) ");
+            String giveGroom = (keyboard.nextLine()).toLowerCase();
+            int groomPrice = 50;
+            
+            //Ensures that user has enough amount of coins to groom
+            if(coins >= groomPrice){
+                //If user chooses to groom their pet
+                if(giveGroom.equals("y")){
+                    System.out.println("You groomed your pet!");
+                    coins -= groomPrice;
+                    currentHealth += 5;
+                    //Ensures that current energy doesn't exceed the limit
+                    if(currentHealth > maxHealth){
+                        currentHealth = maxHealth;
+                    }
+                    System.out.println("Your pet is feeling healthier! Your pet has " + currentHealth + "/" + maxHealth + " health!\nCoins -" + groomPrice);
+                    break;
+                }
+                //If user doesn't choose to groom their pet
+                else if(giveGroom.equals("n")){
+                    System.out.println("You didn't groom your pet...");
+                    break;
+                } else {
+                    System.out.println("Invalid input");
+                } 
+            }
+            //If user doesn't have enough coins
+            else {
+                System.out.println("You don't have enough coins! Play a minigame to earn some!");
+                break;
+            }
+        }
     }
 }
