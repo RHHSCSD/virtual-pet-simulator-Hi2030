@@ -1,6 +1,7 @@
 package virtualpet;
 import java.util.Scanner;
 import java.util.Random;
+import javax.swing.JOptionPane;
 
 public class VirtualPet {
         //Declare global variables for pet stats
@@ -22,14 +23,14 @@ public class VirtualPet {
         
         //Menu Screen
         System.out.println("    _____        ^----^ \n / /^ . ^\\ \\    |^ Y ^| \n  / (_U_) \\    //      \\\\  \n /	   \\   (,,) (,,)");
-        System.out.print("      Pet Adventures!");
+        System.out.println("      Pet Adventures!");
         
         
         //If username and password is correct, go to menu
         if(login()){
             //First main menu
             do{
-                System.out.print("\nWelcome, Player!\n1.Start Game   2.Instructions   3.Exit \nWhere do you want to go? Enter number: ");
+                System.out.print("Welcome, Player!\n1.Start Game   2.Instructions   3.Exit \nWhere do you want to go? Enter number: ");
                 menuOption = keyboard.nextInt();
 
                 //Determine where the user wants to go
@@ -111,10 +112,15 @@ public class VirtualPet {
         Scanner keyboard = new Scanner(System.in);
         //Gives user 3 chances to enter correct username and password
         for (int i = 0; i < 3; i++){
+           /*
             System.out.print("\nEnter username: ");
             String username = keyboard.nextLine();
             System.out.print("Enter password: ");
             String password = keyboard.nextLine();
+            */
+            String username = JOptionPane.showInputDialog("Enter your username");
+            String password = JOptionPane.showInputDialog("Enter your password");
+            
             
             //If username and password is correct, go to return
             if ((username.equals("snoopy")) && (password.equals("toto"))){
@@ -122,12 +128,14 @@ public class VirtualPet {
             }
             //If guesses exceed 3, exit program
             else if(i == 2){
-                System.out.println("You have guessed too many times. Login Failed.");
+                //System.out.println("You have guessed too many times. Login Failed.");
+                JOptionPane.showMessageDialog(null, "You have guessed too many times. Login Failed.");
                 System.exit(0);
             }
             //If user guesses wrong, output and start next loop/guess
             else{
-                System.out.println("Incorrect username or password. Try again.");
+                //System.out.println("Incorrect username or password. Try again.");
+                JOptionPane.showMessageDialog(null, "Incorrect username or password. Try again.");
             }
         }
         //If username and password are correct, tell program to go to second main menu 
@@ -170,14 +178,17 @@ public class VirtualPet {
         String petName = "";
         
         for(int i = 1; i > 0; i++){
-            System.out.print("\nChoose a name for your pet! Would you like to...\n1.Type in a name\n2.Randomly generate a name\nChoose: ");
-            int nameChoice = keyboard.nextInt();
-            keyboard.nextLine();
-
+            //System.out.print("\nChoose a name for your pet! Would you like to...\n1.Type in a name\n2.Randomly generate a name\nChoose: ");
+            //int nameChoice = keyboard.nextInt();
+            //keyboard.nextLine();
+            String choice = JOptionPane.showInputDialog("Choose a name for your pet! Would you like to...\n1.Type in a name\n2.Randomly generate a name");
+            int nameChoice = Integer.parseInt(choice);
+            
             //If user chooses to pick their own name
             if(nameChoice == 1){
-                System.out.print("Enter a name: ");
-                petName = keyboard.nextLine();
+                petName = JOptionPane.showInputDialog("Enter a name for your pet");
+                //System.out.print("Enter a name: ");
+                //petName = keyboard.nextLine();
                 break;
             } 
             //Otherwise if the user chooses a randomly generated name, use random name generator
@@ -216,11 +227,12 @@ public class VirtualPet {
                 }
                 break;
             } else{
-                System.out.println("Invalid input");
+                JOptionPane.showMessageDialog(null, "Invalid Input.");
             }
         }
         //State the name of the pet and return it to be used in the stat points assignment UI
-        System.out.println("Your pet, named " + petName + ", has been born!\n");
+        JOptionPane.showMessageDialog(null, "Your pet, named " + petName + ", has been born!");
+        //System.out.println("Your pet, named " + petName + ", has been born!\n");
         return petName;
     }
 
