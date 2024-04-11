@@ -20,6 +20,7 @@ public class VirtualPet {
         
         //If username and password is correct, go to menu
         if(login()){
+            //First main menu
             do{
                 System.out.print("\nWelcome, Player!\n1.Start Game   2.Instructions   3.Exit \nWhere do you want to go? Enter number: ");
                 menuOption = keyboard.nextInt();
@@ -43,6 +44,7 @@ public class VirtualPet {
             } while (menuOption != 3 && mainMenu == false);
         }
         
+        //Second main menu
         //Looping the main menu after a user has chosen their pet while they have not chosen to exit the program
         do{
             //Ask user for input
@@ -67,11 +69,13 @@ public class VirtualPet {
                             break;
                         default: System.out.print("Invalid Input");
                     }
+                //If user wants to see the instructions
                 case 2: 
                     mainMenu = false;
                     System.out.println("Here are the instructions!"); 
                     mainMenu = true;
                     break;
+                //If user wants to exit the game
                 case 3: System.out.println("Exiting..."); break;
                 default: System.out.println("Invalid input");
             }
@@ -82,23 +86,28 @@ public class VirtualPet {
     //Login system    
     public static boolean login(){
         Scanner keyboard = new Scanner(System.in);
-        
+        //Gives user 3 chances to enter correct username and password
         for (int i = 0; i < 3; i++){
             System.out.print("\nEnter username: ");
             String username = keyboard.nextLine();
             System.out.print("Enter password: ");
             String password = keyboard.nextLine();
+            
+            //If username and password is correct, go to return
             if ((username.equals("snoopy")) && (password.equals("toto"))){
                 break;
             }
+            //If guesses exceed 3, exit program
             else if(i == 2){
                 System.out.println("You have guessed too many times. Login Failed.");
                 System.exit(0);
             }
+            //If user guesses wrong, output and start next loop/guess
             else{
                 System.out.println("Incorrect username or password. Try again.");
             }
         }
+        //If username and password are correct, tell program to go to second main menu 
         return true;
     }   
     
@@ -107,10 +116,12 @@ public class VirtualPet {
         Scanner keyboard = new Scanner(System.in);
         String userPet = "";
         
+        //Keep looping until user gives valid response
         for (int i = 1; i > 0; i++){
             System.out.print("\nOption 1: Dog   Option 2: Cat \nChoose a pet: ");
             int petChoice = keyboard.nextInt();
             
+            //Depending on user input, determine pet choice
             if(petChoice == 1){
                 System.out.println("You have chosen the Dog!");
                 userPet = "dog";
@@ -125,6 +136,7 @@ public class VirtualPet {
                 System.out.println("Invalid input");
             }
         }
+        //Return the pet chosen
         return userPet;
     }
     
@@ -155,15 +167,18 @@ public class VirtualPet {
                 //Used to alternate between consonants and vowels
                 for(int j = 0; j < nameLength; j++){
                     if (j%2 == 0){
-                        //For the first loop/letter in the name, choose from a list of capital letters
+                        //For the first loop/letter in the name, choose from a list of capital letter cosntants
                         if(j==0){
                             char cConsonant = (char)cConsonants.charAt(rand.nextInt(20));
                             petName += cConsonant;
                             continue;
                         }
+                        //Otherwise choose a lowercase constant
                         char consonant = (char)consonants.charAt(rand.nextInt(20));
                         petName += consonant;
-                    } else if (j%2 == 1){
+                    } 
+                    //For every even letter in the name, choose a vowel
+                    else if (j%2 == 1){
                         char vowel = (char)vowels.charAt(rand.nextInt(5));
                         char tempVowel = vowel;
                         petName += tempVowel;
@@ -181,12 +196,14 @@ public class VirtualPet {
                 System.out.println("Invalid input");
             }
         }
+        //State the name of the pet and return it to be used in the stat points assignment UI
         System.out.println("Your pet, named " + petName + ", has been born!\n");
         return petName;
     }
 
     //Pet Stat Points
     public static boolean statPointsAssign(String petName){
+        //State variables
         Random rand = new Random();
         Scanner keyboard = new Scanner(System.in);
         int maxHealth = 0;
@@ -216,32 +233,39 @@ public class VirtualPet {
         int randNum = rand.nextInt(98) + 2;
         int tempCoins = 0;
 
+        //Ask user to guess, and they have 10 tries
         System.out.print("Guess a number between 1-100: ");
         int guess = keyboard.nextInt();
         for (int i = 0; i < 9; i++){
+            //Tell the user if their guess it too high or low
             if (guess > randNum){
                 System.out.println("Too high! Try again!");
             }
             else if (guess < randNum){
                 System.out.println("Too low! Try again!");
             }
+            //If guessed correctly, the user will get some coins based on number of guesses used
             else if (guess == randNum){
                 tempCoins += 100 * (9 - i);
                 System.out.println("You got it correct! You guessed " + (i + 1) + " times. You earned " + tempCoins + " coins!");
                 break;
             }
+            //Otherwise continue asking user to guess
             System.out.print("Guess a number between 1-100: ");
             guess = keyboard.nextInt();
+            //If user doesn't get the number within 10 tries, they get nothing
             if(guess != randNum && i == 9){
                 System.out.println("You ran out of guesses. The number was " + randNum + ". Better luck next time!");
                 tempCoins = 0;
             }
         }
+        //Return number of coins earned in this minigame to main method to store total coins for the user
         return tempCoins;
     }
     
     //Matching Minigame
     public static int matchingGame(){
+        //Declare variables
         System.out.println("\nMatching Game...");
         Scanner keyboard = new Scanner(System.in);
         Random rand = new Random();
@@ -256,6 +280,7 @@ public class VirtualPet {
         int correctPairs = 0;
         int tempCoins = 0;
 
+        //Used to shuffle the 'deck'
         for (int i = 0; i < shuffleLength; i++){
             tempLetter = rand.nextInt(startingCards.length());
             shuffle += startingCards.charAt(tempLetter);
@@ -263,16 +288,21 @@ public class VirtualPet {
             noReveal += "X";
         }
 
-        System.out.println("Select indicies to match the letters...\n" + noReveal);
-        for (int i = 0; i < 20; i++){
+        //Asks user to guess the locations of matching letters based on indicies
+        System.out.println("Select indicies to match the letters...\n" + noReveal + "\n0 1 2 3 4 5 6 7 8 9 10 11");
+        //Users are given 30 tries
+        for (int i = 0; i < 30; i++){
             System.out.print("\nIndex 1: ");
             int index1 = keyboard.nextInt();
             System.out.print("Index 2: ");
             int index2 = keyboard.nextInt();
 
+            //If the letters at chosen indicies are equal, then reveal them
             if(shuffle.charAt(index1) == shuffle.charAt(index2)){
                 System.out.println("That is correct!");
                 correctPairs += 1;
+                
+                //Used to display the string based on every found pair
                 if(correctPairs == 1){
                     correctGuess = noReveal.substring(0,index1) + shuffle.charAt(index1) + noReveal.substring((index1 + 1),index2) + shuffle.charAt(index2) + noReveal.substring((index2 + 1),noReveal.length());
                     System.out.print(correctGuess);
@@ -284,16 +314,20 @@ public class VirtualPet {
                 System.out.print("They did not match. Try again!");
             }
 
+            //If the user finds all pairs, then they are given coins based on number of guesses
             if(correctPairs == (shuffleLength/2)){
-                tempCoins += 25 * (20 - i) * correctPairs;
+                tempCoins += 25 * (30 - i) * correctPairs;
                 System.out.println("\nYou found all the pairs! You earned " + tempCoins + " coins!");
                 break;
-            } else if((correctPairs != (shuffleLength/2)) && (i == 19)){
+            } 
+            //Otherwise if user doesn't get all pairs within the limited number of tries, they get coins based on number of found pairs
+            else if((correctPairs != (shuffleLength/2)) && (i == 19)){
                 tempCoins += 25 * correctPairs;
                 System.out.println("\nYou didn't final all pairs. Try again next time! You earned " + tempCoins + " coins!");
                 break;
             }
         }
+        //Return the coins earned in this minigame to the main method to store a total number of coins
         return tempCoins;
     }
 }
