@@ -2,6 +2,7 @@ package virtualpet;
 import java.util.Scanner;
 import java.util.Random;
 import javax.swing.JOptionPane;
+import java.io.*;
 
 public class VirtualPet {
         //Declare global variables for pet stats
@@ -12,12 +13,14 @@ public class VirtualPet {
         static int maxEnergy = 0;
         static int currentEnergy = 0;
         static int coins = 0;
+        static boolean mainMenu = false;
+        static String username = "";
+        static String password = "";
         
     public static void main(String[] args) {
         //Declare variables
         Scanner keyboard = new Scanner(System.in);
         Random rand = new Random();
-        boolean mainMenu = false;
         int menuOption = 0;
         int tempCoins = 0;
         
@@ -26,11 +29,11 @@ public class VirtualPet {
         System.out.println("      Pet Adventures!");
         
         
+        //First main menu
         //If username and password is correct, go to menu
         if(login()){
-            //First main menu
             do{
-                System.out.print("Welcome, Player!\n1.Start Game   2.Instructions   3.Exit \nWhere do you want to go? Enter number: ");
+                System.out.print("Welcome, " +  username + "!\n1.Start Game   2.Instructions   3.Exit \nWhere do you want to go? Enter number: ");
                 menuOption = keyboard.nextInt();
 
                 //Determine where the user wants to go
@@ -56,7 +59,7 @@ public class VirtualPet {
         //Looping the main menu after a user has chosen their pet while they have not chosen to exit the program
         do{
             //Ask user for input
-            System.out.print("\nWelcome, Player!\nYou currently have " + coins + " coins\n1.Play/Interact   2.Instructions   3.Exit \nWhere do you want to go? Enter number: ");
+            System.out.print("\nWelcome, " + username + "!\nYou currently have " + coins + " coins\n1.Play/Interact   2.Instructions   3.Exit \nWhere do you want to go? Enter number: ");
             menuOption = keyboard.nextInt();
 
             //Determine what to do depending on user input
@@ -110,36 +113,76 @@ public class VirtualPet {
     //Login system    
     public static boolean login(){
         Scanner keyboard = new Scanner(System.in);
-        //Gives user 3 chances to enter correct username and password
-        for (int i = 0; i < 3; i++){
-           /*
-            System.out.print("\nEnter username: ");
-            String username = keyboard.nextLine();
-            System.out.print("Enter password: ");
-            String password = keyboard.nextLine();
-            */
-            String username = JOptionPane.showInputDialog("Enter your username");
-            String password = JOptionPane.showInputDialog("Enter your password");
-            
-            
-            //If username and password is correct, go to return
-            if ((username.equals("snoopy")) && (password.equals("toto"))){
-                break;
-            }
-            //If guesses exceed 3, exit program
-            else if(i == 2){
-                //System.out.println("You have guessed too many times. Login Failed.");
-                JOptionPane.showMessageDialog(null, "You have guessed too many times. Login Failed.");
-                System.exit(0);
-            }
-            //If user guesses wrong, output and start next loop/guess
-            else{
-                //System.out.println("Incorrect username or password. Try again.");
-                JOptionPane.showMessageDialog(null, "Incorrect username or password. Try again.");
+        
+        System.out.print("Are you a new user (Y/N)? ");
+        String newUser = (keyboard.next()).toLowerCase();
+        boolean goToFirstMenu = false;
+        username = "";
+        password = "";
+        
+        if(newUser.equals("y")){
+            for (int i = 1; i > 0; i++){
+                try{
+                    keyboard.nextLine();
+                    System.out.print("Enter a new username: ");
+                    username = keyboard.nextLine();
+                    System.out.print("Enter a new password: ");
+                    password = keyboard.nextLine();
+                    
+                    File newUserInfo = new File(username + ".txt");
+                    PrintWriter output = new PrintWriter(newUserInfo);
+                    output.print(username + "\n" + password);
+                    output.close();
+                    
+                    mainMenu = false;
+                    goToFirstMenu = true;   
+                    break;
+                } catch (FileNotFoundException e){
+                    System.out.println("Error! Can't Open!");
+                }
+            }            
+        }
+        else if(newUser.equals("n")){
+            //Gives user 3 chances to enter correct username and password
+            try{
+                for (int i = 0; i < 3; i++){
+                    username = JOptionPane.showInputDialog("Enter your username");
+                    password = JOptionPane.showInputDialog("Enter your password");
+                    File userInfo = new File(username + ".txt");
+                    if(userInfo.exists()){
+                        Scanner input = new Scanner(userInfo);
+                        String correctUsername = input.nextLine();
+                        String correctPassword = input.nextLine();
+                        input.close();
+
+                        //If username and password is correct, go to return
+                        if ((username.equals(correctUsername)) && (password.equals(correctPassword))){
+                            break;
+                        }
+                        //If guesses exceed 3, exit program
+                        else if(i == 2){
+                            //System.out.println("You have guessed too many times. Login Failed.");
+                            JOptionPane.showMessageDialog(null, "You have guessed too many times. Login Failed.");
+                            System.exit(0);
+                        }
+                        //If user guesses wrong, output and start next loop/guess
+                        else{
+                            //System.out.println("Incorrect username or password. Try again.");
+                            JOptionPane.showMessageDialog(null, "Incorrect password. Try again.");
+                        }
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null, "Incorrect username. Try again.");
+                    }
+                }
+                //If username and password are correct, tell program to go to second main menu 
+                mainMenu = true;
+                goToFirstMenu = false;
+            } catch (FileNotFoundException e){
+                System.out.println("Error! Can't Open!");
             }
         }
-        //If username and password are correct, tell program to go to second main menu 
-        return true;
+        return goToFirstMenu;
     }   
     
     //Pet Selector
@@ -173,7 +216,6 @@ public class VirtualPet {
     
     //Name Selector
     public static String nameSelector(){
-        Scanner keyboard = new Scanner(System.in);
         Random rand = new Random();
         String petName = "";
         
@@ -240,7 +282,6 @@ public class VirtualPet {
     public static void statPointsAssign(String petName){
         //State variables
         Random rand = new Random();
-        Scanner keyboard = new Scanner(System.in);
         int totalStatPoints = 50;
         
         //Randomly assign stat points to the pet after a name is chosen
