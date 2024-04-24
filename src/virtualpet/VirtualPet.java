@@ -5,29 +5,31 @@ import javax.swing.JOptionPane;
 import java.io.*;
 
 public class VirtualPet {
-        //Declare global variables for pet stats
+        //Declare global variables
         static int maxHealth = 0;
         static int currentHealth = 0;
         static int maxFood = 0;
         static int currentFood = 0;
         static int maxEnergy = 0;
         static int currentEnergy = 0;
+        
         static int coins = 0;
         static boolean mainMenu = false;
+        
         static String username = "";
         static String password = "";
+        static String userPet = "";
+        static String petName = "";
         
     public static void main(String[] args) {
         //Declare variables
         Scanner keyboard = new Scanner(System.in);
-        Random rand = new Random();
         int menuOption = 0;
         int tempCoins = 0;
         
         //Menu Screen
         System.out.println("    _____        ^----^ \n / /^ . ^\\ \\    |^ Y ^| \n  / (_U_) \\    //      \\\\  \n /	   \\   (,,) (,,)");
         System.out.println("      Pet Adventures!");
-        
         
         //First main menu
         //If username and password is correct, go to menu
@@ -46,10 +48,14 @@ public class VirtualPet {
                         break;
                     //If user chooses to read instructions, they will be brought to the instructions
                     case 2: 
-                        System.out.println("Here are the instructions!"); 
-                        break;
+                        System.out.println("Here are the instructions!"); break;
                     //If user chooses to leave the game, the program will stop
-                    case 3: System.out.println("Exiting..."); System.exit(0); break;
+                    case 3: 
+                        System.out.println("Exiting..."); 
+                        System.out.println("Saving data...");
+                        saveData();
+                        System.exit(0); 
+                        break;
                     default: System.out.println("Invalid input");
                 }
             } while (menuOption != 3 && mainMenu == false);
@@ -67,7 +73,7 @@ public class VirtualPet {
                 //If user chooses to start playing
                 case 1: 
                     mainMenu = false;
-                    System.out.println("\nMinigames:\n1.Number Guessing Game\n2.Matching Game\nInteraction:\n3.Play with your pet\n4.Feed your pet\n5.Groom your pet");
+                    System.out.println("\nMinigames:\n1.Number Guessing Game\n2.Matching Game\nInteraction:\n3.Play with your pet\n4.Feed your pet\n5.Groom your pet\n6.Go back to menu");
                     System.out.print("Where would you like to go: ");
                     int gameChoice = keyboard.nextInt();
                     switch(gameChoice){
@@ -81,18 +87,22 @@ public class VirtualPet {
                             coins += matchingGame();
                             mainMenu = true;
                             break;
+                        //User chooses to play with pet
                         case 3:
                             playPet();
                             mainMenu = true;
                             break;
+                        //User chooses to feed pet
                         case 4:
                             feedPet();
-                            mainMenu = true;
-                            break;
+                            mainMenu = true; break;
+                        //User chooses to groom pet
                         case 5:
                             groomPet();
-                            mainMenu = true;
-                            break;
+                            mainMenu = true; break;
+                        //User chooses to return to main menu
+                        case 6: 
+                            mainMenu = true; break;
                         default: System.out.print("Invalid Input");
                     }
                     break;
@@ -107,6 +117,8 @@ public class VirtualPet {
                 default: System.out.println("Invalid input");
             }
         } while (menuOption != 3 && mainMenu == true);
+        System.out.println("Saving data...");
+        saveData();
         System.exit(0);
     }
     
@@ -157,17 +169,16 @@ public class VirtualPet {
 
                         //If username and password is correct, go to return
                         if ((username.equals(correctUsername)) && (password.equals(correctPassword))){
+                            loadData();
                             break;
                         }
                         //If guesses exceed 3, exit program
                         else if(i == 2){
-                            //System.out.println("You have guessed too many times. Login Failed.");
                             JOptionPane.showMessageDialog(null, "You have guessed too many times. Login Failed.");
                             System.exit(0);
                         }
                         //If user guesses wrong, output and start next loop/guess
                         else{
-                            //System.out.println("Incorrect username or password. Try again.");
                             JOptionPane.showMessageDialog(null, "Incorrect password. Try again.");
                         }
                     }
@@ -178,7 +189,7 @@ public class VirtualPet {
                 //If username and password are correct, tell program to go to second main menu 
                 mainMenu = true;
                 goToFirstMenu = false;
-            } catch (FileNotFoundException e){
+            } catch (IOException e){
                 System.out.println("Error! Can't Open!");
             }
         }
@@ -188,7 +199,6 @@ public class VirtualPet {
     //Pet Selector
     public static String petSelector(){
         Scanner keyboard = new Scanner(System.in);
-        String userPet = "";
         
         //Keep looping until user gives valid response
         for (int i = 1; i > 0; i++){
@@ -217,20 +227,14 @@ public class VirtualPet {
     //Name Selector
     public static String nameSelector(){
         Random rand = new Random();
-        String petName = "";
         
         for(int i = 1; i > 0; i++){
-            //System.out.print("\nChoose a name for your pet! Would you like to...\n1.Type in a name\n2.Randomly generate a name\nChoose: ");
-            //int nameChoice = keyboard.nextInt();
-            //keyboard.nextLine();
             String choice = JOptionPane.showInputDialog("Choose a name for your pet! Would you like to...\n1.Type in a name\n2.Randomly generate a name");
             int nameChoice = Integer.parseInt(choice);
             
             //If user chooses to pick their own name
             if(nameChoice == 1){
                 petName = JOptionPane.showInputDialog("Enter a name for your pet");
-                //System.out.print("Enter a name: ");
-                //petName = keyboard.nextLine();
                 break;
             } 
             //Otherwise if the user chooses a randomly generated name, use random name generator
@@ -274,7 +278,6 @@ public class VirtualPet {
         }
         //State the name of the pet and return it to be used in the stat points assignment UI
         JOptionPane.showMessageDialog(null, "Your pet, named " + petName + ", has been born!");
-        //System.out.println("Your pet, named " + petName + ", has been born!\n");
         return petName;
     }
 
@@ -285,10 +288,10 @@ public class VirtualPet {
         int totalStatPoints = 50;
         
         //Randomly assign stat points to the pet after a name is chosen
-        maxHealth = rand.nextInt(20)+1;
+        maxHealth = rand.nextInt(20)+10;
         currentHealth = maxHealth;
         totalStatPoints -= maxHealth;
-        maxFood = rand.nextInt(20)+1;
+        maxFood = rand.nextInt(20)+10;
         currentFood = maxFood;
         totalStatPoints -= maxFood;
         maxEnergy = totalStatPoints;
@@ -413,7 +416,7 @@ public class VirtualPet {
         for(int i = 1; i > 0; i++){
             System.out.print("Would you like to give your pet a toy?(Y/N) ");
             String giveToy = (keyboard.nextLine()).toLowerCase();
-            int toyPrice = 45;
+            final int toyPrice = 45;
             
             //Ensures that user has enough amount of coins to pay for a toy
             if(coins >= toyPrice){
@@ -452,7 +455,7 @@ public class VirtualPet {
         for(int i = 1; i > 0; i++){
             System.out.print("Would you like to feed your pet?(Y/N) ");
             String giveFood = (keyboard.nextLine()).toLowerCase();
-            int foodPrice = 35;
+            final int foodPrice = 35;
             
             //Ensures that user has enough amount of coins to pay for food
             if(coins >= foodPrice){
@@ -465,7 +468,7 @@ public class VirtualPet {
                     if(currentFood > maxFood){
                         currentFood = maxFood;
                     }
-                    System.out.println("You pet is less hungry! Your pet has " + currentFood + "/" + maxFood + " food!\nCoins -" + foodPrice);
+                    System.out.println("You pet is less hungry! Your pet has " + currentFood + "/" + maxFood + " hunger!\nCoins -" + foodPrice);
                     break;
                 }
                 //If user doesn't choose to feed pet
@@ -491,7 +494,7 @@ public class VirtualPet {
         for(int i = 1; i > 0; i++){
             System.out.print("Would you like to groom your pet?(Y/N) ");
             String giveGroom = (keyboard.nextLine()).toLowerCase();
-            int groomPrice = 50;
+            final int groomPrice = 50;
             
             //Ensures that user has enough amount of coins to groom
             if(coins >= groomPrice){
@@ -519,6 +522,63 @@ public class VirtualPet {
             else {
                 System.out.println("You don't have enough coins! Play a minigame to earn some!");
                 break;
+            }
+        }
+    }
+    
+    //Save user data
+    public static void saveData(){
+        boolean saveSuccess = false;
+        while(saveSuccess == false){
+            try{
+                File saveToFile = new File ("user_" + username + ".txt");
+                PrintWriter output = new PrintWriter(saveToFile);
+                output.println(username + "\n" + password);
+                output.println(userPet + "\n" + petName);
+                output.println(maxHealth + "\n" + currentHealth);
+                output.println(maxEnergy + "\n" + currentEnergy);
+                output.println(maxFood + "\n" + currentFood);
+                output.println(coins);
+                output.close();
+                saveSuccess = true;
+                System.out.println("Save successful!");
+            } catch (IOException e){
+                System.out.println("Error saving file. Retrying...");
+                saveSuccess = false;
+            }
+        }
+    }
+    
+    //Load user data
+    public static void loadData(){
+        boolean loadSuccess = false;
+        while(loadSuccess == false){
+            try{
+                File saveToFile = new File ("user_" + username + ".txt");
+                Scanner input = new Scanner (saveToFile);
+                username = input.nextLine();
+                password = input.nextLine();
+                userPet = input.nextLine();
+                petName = input.nextLine();
+                maxHealth = input.nextInt();
+                input.nextLine();
+                currentHealth = input.nextInt();
+                input.nextLine();
+                maxEnergy = input.nextInt();
+                input.nextLine();
+                currentEnergy = input.nextInt();
+                input.nextLine();
+                maxFood = input.nextInt();
+                input.nextLine();
+                currentFood = input.nextInt();
+                input.nextLine();
+                coins = input.nextInt();
+                input.close();
+                loadSuccess = true;
+                System.out.println("Load successful!");
+            } catch (IOException e){
+                System.out.println("Error loading file. Retrying...");
+                loadSuccess = false;
             }
         }
     }
