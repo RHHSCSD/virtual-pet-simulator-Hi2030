@@ -6,12 +6,9 @@ import java.io.*;
 
 public class VirtualPet {
         //Declare global variables
-        static int maxHealth = 0;
-        static int currentHealth = 0;
-        static int maxFood = 0;
-        static int currentFood = 0;
-        static int maxEnergy = 0;
-        static int currentEnergy = 0;
+        //Max Health, Food, Energy
+        static int[] maxStats = new int[3];
+        static int[] currentStats = new int[3];
         
         static int coins = 0;
         static boolean mainMenu = false;
@@ -179,11 +176,15 @@ public class VirtualPet {
                         }
                         //If user guesses wrong, output and start next loop/guess
                         else{
-                            JOptionPane.showMessageDialog(null, "Incorrect password. Try again.");
+                            JOptionPane.showMessageDialog(null, "Incorrect username or password. Try again.");
                         }
                     }
                     else{
-                        JOptionPane.showMessageDialog(null, "Incorrect username. Try again.");
+                        JOptionPane.showMessageDialog(null, "Incorrect username or password. Try again.");
+                        if(i == 2){
+                            JOptionPane.showMessageDialog(null, "You have guessed too many times. Login Failed.");
+                            System.exit(0);
+                        }
                     }
                 }
                 //If username and password are correct, tell program to go to second main menu 
@@ -288,18 +289,18 @@ public class VirtualPet {
         int totalStatPoints = 50;
         
         //Randomly assign stat points to the pet after a name is chosen
-        maxHealth = rand.nextInt(20)+10;
-        currentHealth = maxHealth;
-        totalStatPoints -= maxHealth;
-        maxFood = rand.nextInt(20)+10;
-        currentFood = maxFood;
-        totalStatPoints -= maxFood;
-        maxEnergy = totalStatPoints;
-        currentEnergy = maxEnergy;
+        maxStats[0] = rand.nextInt(20)+10;
+        currentStats[0] = maxStats[0];
+        totalStatPoints -= maxStats[0];
+        maxStats[1] = rand.nextInt(20)+10;
+        currentStats[1] = maxStats[1];
+        totalStatPoints -= maxStats[1];
+        maxStats[2] = totalStatPoints;
+        currentStats[2] = maxStats[2];
 
         //Output the stats for the pet
         System.out.println(petName + " Stats:");
-        System.out.println("Health: " + maxHealth + "\nFood: " + maxFood + "\nEnergy: " + maxEnergy);
+        System.out.println("Health: " + maxStats[0] + "\nFood: " + maxStats[1] + "\nEnergy: " + maxStats[2]);
     }
     
     //Number Guessing Minigame
@@ -424,12 +425,12 @@ public class VirtualPet {
                 if(giveToy.equals("y")){
                     System.out.println("You gave your pet a toy!");
                     coins -= toyPrice;
-                    currentEnergy += 5;
+                    currentStats[2] += 5;
                     //Ensures that current energy doesn't exceed the limit
-                    if(currentEnergy > maxEnergy){
-                        currentEnergy = maxEnergy;
+                    if(currentStats[2] > maxStats[2]){
+                        currentStats[2] = maxStats[2];
                     }
-                    System.out.println("Your pet is feeling more energetic! Your pet has " + currentEnergy + "/" + maxEnergy + " energy!\nCoins -" + toyPrice);
+                    System.out.println("Your pet is feeling more energetic! Your pet has " + currentStats[2] + "/" + maxStats[2] + " energy!\nCoins -" + toyPrice);
                     break;
                 }
                 //If user doesn't choose to give their pet a toy
@@ -463,12 +464,12 @@ public class VirtualPet {
                 if(giveFood.equals("y")){
                     System.out.println("You fed your pet!");
                     coins -= foodPrice;
-                    currentFood += 5;
+                    currentStats[1] += 5;
                     //Ensures that current food doesn't exceed the limit
-                    if(currentFood > maxFood){
-                        currentFood = maxFood;
+                    if(currentStats[1] > maxStats[1]){
+                        currentStats[1] = maxStats[1];
                     }
-                    System.out.println("You pet is less hungry! Your pet has " + currentFood + "/" + maxFood + " hunger!\nCoins -" + foodPrice);
+                    System.out.println("You pet is less hungry! Your pet has " + currentStats[1] + "/" + maxStats[1] + " hunger!\nCoins -" + foodPrice);
                     break;
                 }
                 //If user doesn't choose to feed pet
@@ -502,12 +503,12 @@ public class VirtualPet {
                 if(giveGroom.equals("y")){
                     System.out.println("You groomed your pet!");
                     coins -= groomPrice;
-                    currentHealth += 5;
+                    currentStats[0] += 5;
                     //Ensures that current energy doesn't exceed the limit
-                    if(currentHealth > maxHealth){
-                        currentHealth = maxHealth;
+                    if(currentStats[0] > maxStats[0]){
+                        currentStats[0] = maxStats[0];
                     }
-                    System.out.println("Your pet is feeling healthier! Your pet has " + currentHealth + "/" + maxHealth + " health!\nCoins -" + groomPrice);
+                    System.out.println("Your pet is feeling healthier! Your pet has " + currentStats[0] + "/" + maxStats[0] + " health!\nCoins -" + groomPrice);
                     break;
                 }
                 //If user doesn't choose to groom their pet
@@ -535,9 +536,9 @@ public class VirtualPet {
                 PrintWriter output = new PrintWriter(saveToFile);
                 output.println(username + "\n" + password);
                 output.println(userPet + "\n" + petName);
-                output.println(maxHealth + "\n" + currentHealth);
-                output.println(maxEnergy + "\n" + currentEnergy);
-                output.println(maxFood + "\n" + currentFood);
+                output.println(maxStats[0] + "\n" + currentStats[0]);
+                output.println(maxStats[1] + "\n" + currentStats[1]);
+                output.println(maxStats[2] + "\n" + currentStats[2]);
                 output.println(coins);
                 output.close();
                 saveSuccess = true;
@@ -560,17 +561,17 @@ public class VirtualPet {
                 password = input.nextLine();
                 userPet = input.nextLine();
                 petName = input.nextLine();
-                maxHealth = input.nextInt();
+                maxStats[0] = input.nextInt();
                 input.nextLine();
-                currentHealth = input.nextInt();
+                currentStats[0] = input.nextInt();
                 input.nextLine();
-                maxEnergy = input.nextInt();
+                maxStats[1] = input.nextInt();
                 input.nextLine();
-                currentEnergy = input.nextInt();
+                currentStats[1] = input.nextInt();
                 input.nextLine();
-                maxFood = input.nextInt();
+                maxStats[2] = input.nextInt();
                 input.nextLine();
-                currentFood = input.nextInt();
+                currentStats[2] = input.nextInt();
                 input.nextLine();
                 coins = input.nextInt();
                 input.close();
