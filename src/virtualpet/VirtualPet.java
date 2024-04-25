@@ -557,15 +557,14 @@ public class VirtualPet {
                 //Ends loop if save was successful
                 saveSuccess = true;
                 System.out.println("Save successful!");
-                if(interactAchievements[0] == 10){
+                
+                //If user reached specific milestones
+                if(interactAchievements[0] == 10)
                     System.out.println("You have earned Playful Pet!");
-                }
-                if(interactAchievements[1] == 10){
+                if(interactAchievements[1] == 10)
                     System.out.println("You have earned Avid Eater!");
-                }
-                if(interactAchievements[2] == 10){
+                if(interactAchievements[2] == 10)
                     System.out.println("You have earned Playful Pet!");
-                }
             } catch (IOException e){
                 System.out.println("Error saving file. Retrying...");
                 saveSuccess = false;
