@@ -9,6 +9,7 @@ public class VirtualPet {
         //Max Health, Food, Energy
         static int[] maxStats = new int[3];
         static int[] currentStats = new int[3];
+        static int[] interactAchievements = new int[3];
         
         static int coins = 0;
         static boolean mainMenu = false;
@@ -123,6 +124,7 @@ public class VirtualPet {
     public static boolean login(){
         Scanner keyboard = new Scanner(System.in);
         
+        //Checks to see if it is a new user or not
         System.out.print("Are you a new user (Y/N)? ");
         String newUser = (keyboard.next()).toLowerCase();
         boolean goToFirstMenu = false;
@@ -157,7 +159,8 @@ public class VirtualPet {
                 for (int i = 0; i < 3; i++){
                     username = JOptionPane.showInputDialog("Enter your username");
                     password = JOptionPane.showInputDialog("Enter your password");
-                    File userInfo = new File(username + ".txt");
+                    File userInfo = new File("user_" + username + ".txt");
+                    //If username is correct/exists
                     if(userInfo.exists()){
                         Scanner input = new Scanner(userInfo);
                         String correctUsername = input.nextLine();
@@ -179,8 +182,10 @@ public class VirtualPet {
                             JOptionPane.showMessageDialog(null, "Incorrect username or password. Try again.");
                         }
                     }
+                    //If username is incorrect/doesn't exist
                     else{
                         JOptionPane.showMessageDialog(null, "Incorrect username or password. Try again.");
+                        //If guesses exceed 3, exit program
                         if(i == 2){
                             JOptionPane.showMessageDialog(null, "You have guessed too many times. Login Failed.");
                             System.exit(0);
@@ -430,6 +435,7 @@ public class VirtualPet {
                     if(currentStats[2] > maxStats[2]){
                         currentStats[2] = maxStats[2];
                     }
+                    interactAchievements[2] += 1;
                     System.out.println("Your pet is feeling more energetic! Your pet has " + currentStats[2] + "/" + maxStats[2] + " energy!\nCoins -" + toyPrice);
                     break;
                 }
@@ -469,6 +475,7 @@ public class VirtualPet {
                     if(currentStats[1] > maxStats[1]){
                         currentStats[1] = maxStats[1];
                     }
+                    interactAchievements[1] += 1;
                     System.out.println("You pet is less hungry! Your pet has " + currentStats[1] + "/" + maxStats[1] + " hunger!\nCoins -" + foodPrice);
                     break;
                 }
@@ -508,6 +515,7 @@ public class VirtualPet {
                     if(currentStats[0] > maxStats[0]){
                         currentStats[0] = maxStats[0];
                     }
+                    interactAchievements[2] += 1;
                     System.out.println("Your pet is feeling healthier! Your pet has " + currentStats[0] + "/" + maxStats[0] + " health!\nCoins -" + groomPrice);
                     break;
                 }
@@ -529,20 +537,35 @@ public class VirtualPet {
     
     //Save user data
     public static void saveData(){
+        //Checks to see if the data was saved/written to file
         boolean saveSuccess = false;
         while(saveSuccess == false){
             try{
+                //Overwrites and prints all important data to the file, named based on the username
                 File saveToFile = new File ("user_" + username + ".txt");
                 PrintWriter output = new PrintWriter(saveToFile);
                 output.println(username + "\n" + password);
                 output.println(userPet + "\n" + petName);
-                output.println(maxStats[0] + "\n" + currentStats[0]);
-                output.println(maxStats[1] + "\n" + currentStats[1]);
-                output.println(maxStats[2] + "\n" + currentStats[2]);
+                for (int i = 0; i < maxStats.length; i++){
+                    output.println(maxStats[i]);
+                    output.println(currentStats[i]);
+                    output.println(interactAchievements[i]);
+                }
                 output.println(coins);
                 output.close();
+                
+                //Ends loop if save was successful
                 saveSuccess = true;
                 System.out.println("Save successful!");
+                if(interactAchievements[0] == 10){
+                    System.out.println("You have earned Playful Pet!");
+                }
+                if(interactAchievements[1] == 10){
+                    System.out.println("You have earned Avid Eater!");
+                }
+                if(interactAchievements[2] == 10){
+                    System.out.println("You have earned Playful Pet!");
+                }
             } catch (IOException e){
                 System.out.println("Error saving file. Retrying...");
                 saveSuccess = false;
@@ -552,29 +575,31 @@ public class VirtualPet {
     
     //Load user data
     public static void loadData(){
+        //Checks to see if the data was loaded in/read from the file
         boolean loadSuccess = false;
         while(loadSuccess == false){
             try{
+                //Reads all important data from the file, and is found based on the username
                 File saveToFile = new File ("user_" + username + ".txt");
                 Scanner input = new Scanner (saveToFile);
                 username = input.nextLine();
                 password = input.nextLine();
                 userPet = input.nextLine();
                 petName = input.nextLine();
-                maxStats[0] = input.nextInt();
-                input.nextLine();
-                currentStats[0] = input.nextInt();
-                input.nextLine();
-                maxStats[1] = input.nextInt();
-                input.nextLine();
-                currentStats[1] = input.nextInt();
-                input.nextLine();
-                maxStats[2] = input.nextInt();
-                input.nextLine();
-                currentStats[2] = input.nextInt();
-                input.nextLine();
+                //Read all pet stats information
+                
+                for (int i = 0; i < maxStats.length; i++){
+                    maxStats[i] = input.nextInt();
+                    input.nextLine();
+                    currentStats[i] = input.nextInt();
+                    input.nextLine();
+                    interactAchievements[i] = input.nextInt();
+                    input.nextLine();
+                }
                 coins = input.nextInt();
                 input.close();
+                
+                //Ends loop if load was successful
                 loadSuccess = true;
                 System.out.println("Load successful!");
             } catch (IOException e){
